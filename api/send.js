@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
-  const CHAT_ID = "SEU_CHAT_ID_AQUI";
-  const MESSAGE_PREFIX = "[Minha App] ";
+  const CHAT_ID = "";
+  const MESSAGE_PREFIX = "";
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
