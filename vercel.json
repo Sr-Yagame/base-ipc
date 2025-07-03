@@ -1,15 +1,16 @@
 {
-     "version": 2,
-     "builds": [
-       {
-         "src": "api/*.js",
-         "use": "@vercel/node"
-       }
-     ],
-     "routes": [
-       {
-         "src": "/api/(.*)",
-         "dest": "/api/$1"
-       }
-     ]
-       }
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/send.js",
+      "use": "@vercel/node",
+      "config": { "includeFiles": ["api/**"] }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/send",
+      "dest": "/api/send.js"
+    }
+  ]
+}
