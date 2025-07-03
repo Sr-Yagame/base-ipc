@@ -1,4 +1,7 @@
 export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:8000');
+  res.setHeader('Access-Control-Allow-Methods', 'POST');
+  res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
 
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
