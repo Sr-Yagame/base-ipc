@@ -1,50 +1,72 @@
 export default async function handler(req, res) {
-  const CHAT_ID = "";
-  const MESSAGE_PREFIX = "";
+  const MESSAGE_PREFIX = process.env.MESSAGE_PREFIX || "[Bot] ";
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    res.setHeader('Allow', ['POST']);
+    return res.status(405).json({ 
+      error: 'Method not allowed',
+      docs: 'Use POST with { "message": "text", "chat_id": "123456" }'
+    });
   }
-  
+
   const authHeader = req.headers['authorization'];
-  if (authHeader !== `Bearer ${process.env.API_SECRET_KEY}`) {
-    return res.status(401).json({ error: 'Unauthorized' });
+  if (!authHeader || authHeader !== `Bearer ${process.env.API_SECRET_KEY}`) {
+    return res.status(401).json({ 
+      error: 'Unauthorized',
+      hint: 'Include valid Authorization header'
+    });
   }
-  
-  const { message } = req.body;
-  if (!message) {
-    return res.status(400).json({ error: 'Message content is required' });
+
+  const { message, chat_id } = req.body;
+  if (!message || !chat_id) {
+    return res.status(400).json({ 
+      error: 'Bad request',
+      required: { 
+        message: "string", 
+        chat_id: "number|string (Telegram Chat ID)" 
+      },
+      example: { 
+        message: "Hello World", 
+        chat_id: "123456789" 
+      }
+    });
   }
 
   try {
     const fullMessage = `${MESSAGE_PREFIX}${message}`;
     
-    const telegramResponse = await fetch(
-      `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chat_id: CHAT_ID,
-          text: fullMessage,
-        }),
-      }
-    );
+    const telegramUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`;
+    const telegramResponse = await fetch(telegramUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chat_id,
+        text: fullMessage
+      }),
+    });
 
     const data = await telegramResponse.json();
 
     if (!data.ok) {
-      throw new Error(data.description || 'Failed to send message');
+      console.error('Telegram API Error:', data);
+      return res.status(502).json({ 
+        error: 'Telegram API failed',
+        description: data.description
+      });
     }
 
     return res.status(200).json({ 
       success: true,
       sent_message: fullMessage,
-      chat_id: CHAT_ID
+      chat_id: chat_id,
+      message_id: data.result.message_id
     });
+
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    console.error('Server Error:', error);
+    return res.status(500).json({ 
+      error: 'Internal server error',
+      details: error.message
+    });
   }
-  }
+      }
