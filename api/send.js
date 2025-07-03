@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  const MESSAGE_PREFIX = process.env.MESSAGE_PREFIX || "[Bot] ";
 
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
@@ -33,7 +32,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const fullMessage = `${MESSAGE_PREFIX}${message}`;
+    const fullMessage = `${message}`;
     
     const telegramUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`;
     const telegramResponse = await fetch(telegramUrl, {
