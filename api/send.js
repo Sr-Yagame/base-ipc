@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', 'https://redirecting-wait.netlify.app/?chat_id=');
+  res.setHeader('Access-Control-Allow-Origin', 'https://redirecting-wait.netlify.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
 
@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     res.setHeader('Allow', ['POST']);
     return res.status(405).json({ 
       error: 'Method not allowed',
-      docs: 'Use POST with { "message": "text", "chat_id": "123456" }'
+      docs: 'null'
     });
   }
 
