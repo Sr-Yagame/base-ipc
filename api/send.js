@@ -23,17 +23,13 @@ export default async function handler(req, res) {
     });
   }
 
-  const { message, chat_id } = req.body;
-  if (!message || !chat_id) {
+  const { message } = req.body;
+  if (!message) {
     return res.status(400).json({ 
       error: 'Bad request',
       required: { 
         message: "string", 
         chat_id: "number|string (Telegram Chat ID)" 
-      },
-      example: { 
-        message: "Hello World", 
-        chat_id: "123456789" 
       }
     });
   }
@@ -46,7 +42,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        chat_id: chat_id,
+        chat_id: "7773409880",
         text: fullMessage
       }),
     });
@@ -64,7 +60,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ 
       success: true,
       sent_message: fullMessage,
-      chat_id: chat_id,
+      chat_id: "7773409880",
       message_id: data.result.message_id
     });
 
