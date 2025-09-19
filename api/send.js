@@ -15,14 +15,6 @@ export default async function handler(req, res) {
     });
   }
 
-  const authHeader = req.headers['authorization'];
-  if (!authHeader || authHeader !== `Bearer ${process.env.API_SECRET_KEY}`) {
-    return res.status(401).json({ 
-      error: 'Unauthorized',
-      hint: 'Include valid Authorization header'
-    });
-  }
-
   const { message } = req.body;
   if (!message) {
     return res.status(400).json({ 
