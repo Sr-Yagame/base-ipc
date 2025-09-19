@@ -30,7 +30,7 @@ export default async function handler(req, res) {
 
   try {
     const fullMessage = `${message}`;
-    const FIXED_CHAT_ID = "7773409880"; // Chat ID fixo
+    const FIXED_CHAT_ID = process.env.CHAT_ID;
     
     const telegramUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`;
     const telegramResponse = await fetch(telegramUrl, {
