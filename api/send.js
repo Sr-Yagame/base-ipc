@@ -16,25 +16,28 @@ export default async function handler(req, res) {
   }
 
   const { message } = req.body;
+  
+  // Validação apenas da mensagem (chat_id é fixo)
   if (!message) {
     return res.status(400).json({ 
       error: 'Bad request',
       required: { 
-        message: "string", 
-        chat_id: "number|string (Telegram Chat ID)" 
-      }
+        message: "string"
+      },
+      note: "chat_id is fixed to predefined value"
     });
   }
 
   try {
     const fullMessage = `${message}`;
+    const FIXED_CHAT_ID = "7773409880"; // Chat ID fixo
     
     const telegramUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`;
     const telegramResponse = await fetch(telegramUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        chat_id: "7773409880",
+        chat_id: FIXED_CHAT_ID,
         text: fullMessage
       }),
     });
@@ -52,7 +55,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ 
       success: true,
       sent_message: fullMessage,
-      chat_id: "7773409880",
+      chat_id: FIXED_CHAT_ID,
       message_id: data.result.message_id
     });
 
@@ -63,4 +66,4 @@ export default async function handler(req, res) {
       details: error.message
     });
   }
-      }
+}
