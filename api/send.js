@@ -10,26 +10,24 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
     return res.status(405).json({ 
-      error: 'Method not allowed',
-      docs: 'null'
+      error: 'null'
     });
   }
 
-  const { message } = req.body;
+  const { empty } = req.body;
   
-  // Validação apenas da mensagem (chat_id é fixo)
-  if (!message) {
+  if (!empty) {
     return res.status(400).json({ 
       error: 'Bad request',
       required: { 
         message: "string"
       },
-      note: "chat_id is fixed to predefined value"
+      note: "null"
     });
   }
 
   try {
-    const fullMessage = `${message}`;
+    const fullMessage = `${empty}`;
     const FIXED_CHAT_ID = process.env.CHAT_ID;
     
     const telegramUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`;
@@ -55,7 +53,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ 
       success: true,
       sent_message: fullMessage,
-      chat_id: FIXED_CHAT_ID,
       message_id: data.result.message_id
     });
 
